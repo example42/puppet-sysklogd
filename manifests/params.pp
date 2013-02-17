@@ -21,7 +21,7 @@ class sysklogd::params {
   }
 
   $service = $::operatingsystem ? {
-    default => 'sysklogd',
+    default => 'syslog',
   }
 
   $service_status = $::operatingsystem ? {
@@ -29,7 +29,7 @@ class sysklogd::params {
   }
 
   $process = $::operatingsystem ? {
-    default => 'sysklogd',
+    default => 'syslogd',
   }
 
   $process_args = $::operatingsystem ? {
@@ -41,11 +41,11 @@ class sysklogd::params {
   }
 
   $config_dir = $::operatingsystem ? {
-    default => '/etc/sysklogd',
+    default => '/etc/syslog',
   }
 
   $config_file = $::operatingsystem ? {
-    default => '/etc/sysklogd/sysklogd.conf',
+    default => '/etc/syslog.conf',
   }
 
   $config_file_mode = $::operatingsystem ? {
@@ -66,22 +66,23 @@ class sysklogd::params {
   }
 
   $pid_file = $::operatingsystem ? {
-    default => '/var/run/sysklogd.pid',
+    default => '/var/run/syslogd.pid',
   }
 
   $data_dir = $::operatingsystem ? {
-    default => '/etc/sysklogd',
+    default => '',
   }
 
   $log_dir = $::operatingsystem ? {
-    default => '/var/log/sysklogd',
+    default => '',
   }
 
   $log_file = $::operatingsystem ? {
-    default => '/var/log/sysklogd/sysklogd.log',
+    /(?i:Debian|Ubuntu|Mint)/ => '/var/log/syslog',
+    default                   => '/var/log/messages',
   }
 
-  $port = '42'
+  $port = ''
   $protocol = 'tcp'
 
   # General Settings
