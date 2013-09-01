@@ -128,7 +128,7 @@
 # [*noops*]
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   Basically you can run a dryrun for this specific module if you set
-#   this to true. Default: false
+#   this to true. Default: undef
 #
 # Default class params - As defined in sysklogd::params.
 # Note that these variables are mostly defined and used in the module itself,
@@ -253,7 +253,6 @@ class sysklogd (
   $bool_firewall=any2bool($firewall)
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
-  $bool_noops=any2bool($noops)
 
   ### Definition of some variables used in the module
   $manage_package = $sysklogd::bool_absent ? {
@@ -328,7 +327,7 @@ class sysklogd (
   ### Managed resources
   package { $sysklogd::package:
     ensure  => $sysklogd::manage_package,
-    noop    => $sysklogd::bool_noops,
+    noop    => $sysklogd::noops,
   }
 
   service { 'sysklogd':
@@ -338,7 +337,7 @@ class sysklogd (
     hasstatus  => $sysklogd::service_status,
     pattern    => $sysklogd::process,
     require    => Package[$sysklogd::package],
-    noop       => $sysklogd::bool_noops,
+    noop       => $sysklogd::noops,
   }
 
   file { 'sysklogd.conf':
@@ -353,7 +352,7 @@ class sysklogd (
     content => $sysklogd::manage_file_content,
     replace => $sysklogd::manage_file_replace,
     audit   => $sysklogd::manage_audit,
-    noop    => $sysklogd::bool_noops,
+    noop    => $sysklogd::noops,
   }
 
   # The whole sysklogd configuration directory can be recursively overriden
@@ -369,7 +368,7 @@ class sysklogd (
       force   => $sysklogd::bool_source_dir_purge,
       replace => $sysklogd::manage_file_replace,
       audit   => $sysklogd::manage_audit,
-      noop    => $sysklogd::bool_noops,
+      noop    => $sysklogd::noops,
     }
   }
 
@@ -387,7 +386,7 @@ class sysklogd (
       ensure    => $sysklogd::manage_file,
       variables => $classvars,
       helper    => $sysklogd::puppi_helper,
-      noop      => $sysklogd::bool_noops,
+      noop      => $sysklogd::noops,
     }
   }
 
@@ -401,7 +400,7 @@ class sysklogd (
         target   => $sysklogd::monitor_target,
         tool     => $sysklogd::monitor_tool,
         enable   => $sysklogd::manage_monitor,
-        noop     => $sysklogd::bool_noops,
+        noop     => $sysklogd::noops,
       }
     }
     if $sysklogd::service != '' {
@@ -413,7 +412,7 @@ class sysklogd (
         argument => $sysklogd::process_args,
         tool     => $sysklogd::monitor_tool,
         enable   => $sysklogd::manage_monitor,
-        noop     => $sysklogd::bool_noops,
+        noop     => $sysklogd::noops,
       }
     }
   }
@@ -430,7 +429,7 @@ class sysklogd (
       direction   => 'input',
       tool        => $sysklogd::firewall_tool,
       enable      => $sysklogd::manage_firewall,
-      noop        => $sysklogd::bool_noops,
+      noop        => $sysklogd::noops,
     }
   }
 
@@ -444,7 +443,7 @@ class sysklogd (
       owner   => 'root',
       group   => 'root',
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
-      noop    => $sysklogd::bool_noops,
+      noop    => $sysklogd::noops,
     }
   }
 
